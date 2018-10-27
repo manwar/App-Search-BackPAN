@@ -1,6 +1,6 @@
 package App::Search::BackPAN;
 
-$App::Search::BackPAN::VERSION   = '0.01';
+$App::Search::BackPAN::VERSION   = '0.02';
 $App::Search::BackPAN::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,7 +9,7 @@ App::Search::BackPAN - Command Line Interface for backpan.perl.org.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
@@ -31,12 +31,12 @@ comes with search tool C<search-backpan>.
 For example, if you look for author AAKD.
 
     $ search-backpan --pauseid AAKD
-    [MultiProcFactory-0.01.tar.gz]
-    [MultiProcFactory-0.02.tar.gz]
-    [MultiProcFactory-0.03.tar.gz]
-    [MultiProcFactory-0.04.tar.gz]
-    [XML-Simple-Tree-0.02.tar.gz]
-    [XML-Simple-Tree-0.03.tar.gz]
+    http://backpan.perl.org/authors/id/A/AA/AAKD/MultiProcFactory-0.01.tar.gz
+    http://backpan.perl.org/authors/id/A/AA/AAKD/MultiProcFactory-0.02.tar.gz
+    http://backpan.perl.org/authors/id/A/AA/AAKD/MultiProcFactory-0.03.tar.gz
+    http://backpan.perl.org/authors/id/A/AA/AAKD/MultiProcFactory-0.04.tar.gz
+    http://backpan.perl.org/authors/id/A/AA/AAKD/XML-Simple-Tree-0.02.tar.gz
+    http://backpan.perl.org/authors/id/A/AA/AAKD/XML-Simple-Tree-0.03.tar.gz
 
 =cut
 
@@ -48,6 +48,7 @@ sub new {
     $self->{pause_id}          = undef;
     $self->{first_letter}      = undef;
     $self->{first_two_letters} = undef;
+    $self->{distributions}     = [];
     bless $self;
 
     return $self;
@@ -79,8 +80,8 @@ sub search {
     my $authors = $self->_fetch_authors;
     if (keys %$authors) {
         _die($pause_id) unless (exists $authors->{$pause_id});
-        my $results = $self->_fetch_distributions;
-        return $results;
+        $self->_fetch_distributions;
+        return $self->_format_distributions;
     }
     else {
         _die($pause_id);
@@ -177,13 +178,29 @@ sub _fetch_distributions {
         }
     }
 
-    return $dists;
+   $self->{distributions} = $dists;
+}
+
+sub _format_distributions {
+    my ($self) = @_;
+
+    my $base_url          = $self->{base_url};
+    my $pause_id          = $self->{pause_id};
+    my $first_letter      = $self->{first_letter};
+    my $first_two_letters = $self->{first_two_letters};
+
+    my $result = [];
+    foreach my $dist (@{$self->{distributions}}) {
+        push @$result, sprintf("%s/%s/%s/%s/%s", $base_url, $first_letter, $first_two_letters, $pause_id, $dist);
+    }
+
+    return $result;
 }
 
 sub _die {
     my ($pause) = @_;
 
-    die "ERROR: Invalid PAUSE ID [$pause_id].\n";
+    die "ERROR: PAUSE ID [$pause_id] not found.\n";
 }
 
 =head1 AUTHOR
