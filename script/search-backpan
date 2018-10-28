@@ -26,7 +26,7 @@ END {
 sub _show_help {
     my ($message) = @_;
 
-    my $help = "search-backpan --pauseid <PAUSE_ID> [--help]
+    my $help = "USAGE: search-backpan --pauseid <PAUSE_ID> [--help]
 
     Options:
         -p|--pauseid   Mandatory parameter PAUSE ID.

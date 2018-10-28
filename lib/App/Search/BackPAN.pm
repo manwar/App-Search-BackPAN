@@ -1,6 +1,6 @@
 package App::Search::BackPAN;
 
-$App::Search::BackPAN::VERSION   = '0.02';
+$App::Search::BackPAN::VERSION   = '0.03';
 $App::Search::BackPAN::AUTHORITY = 'cpan:MANWAR';
 
 =head1 NAME
@@ -9,11 +9,13 @@ App::Search::BackPAN - Command Line Interface for backpan.perl.org.
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
 use 5.006;
+use strict;
+use warnings;
 use HTTP::Tiny;
 
 =head1 DESCRIPTION
@@ -116,7 +118,7 @@ sub _validate_first_letter {
         }
     }
 
-    _die($pause_id);
+    _die($self->{pause_id});
 }
 
 sub _validate_first_two_letters {
@@ -198,7 +200,7 @@ sub _format_distributions {
 }
 
 sub _die {
-    my ($pause) = @_;
+    my ($pause_id) = @_;
 
     die "ERROR: PAUSE ID [$pause_id] not found.\n";
 }
