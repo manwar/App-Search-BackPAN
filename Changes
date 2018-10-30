@@ -1,5 +1,8 @@
 Revision history for App::Search::BackPAN
 
+0.05  Tue Oct 30 17:30:00 2018
+      - Added test scripts (t/meta-json.t and t/meta-yml.t).
+
 0.04  Mon Oct 29 19:20:00 2018
       - Added key 'provides' to Makefile.PL script.
 
